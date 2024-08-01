@@ -24,8 +24,9 @@ export interface User extends Document{
     password:string;
     verifyCode:string;
     verifyCodeExpiry:Date;
+    isVerified:boolean;
     isAcceptingMessage: boolean;
-    message:Message[]
+    messages:Message[]
 }
 
 const UserSchema: Schema<User> = new Schema({
@@ -43,16 +44,38 @@ const UserSchema: Schema<User> = new Schema({
     },
     password:{
         type:String, 
-        required:true,
-        match:[/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/, 'Minimum 8 characters ,atleast one Letter and one number'],
+        required:[true,"Password is required"],
+        validate: {
+            validator: function(v) {
+              return /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z0-9]{8,}$/.test(v);
+            },
+            message: 'Password must be at least 8 characters and contain at least one letter and one number.'
+        }
     },
     verifyCode:{
         type:String, 
-        required:true
+        required:[true,"VerifyCode is required"],
     },
     verifyCodeExpiry:{
         type:Date,
-        required:true,
+        required:[true,"Verification Expiry is required"],
         default:Date.now
-    }
+    },
+    isVerified:{
+        type:Boolean,
+        
+        default:false,
+    },
+    isAcceptingMessage:{
+        type:Boolean,
+        
+        default:true,
+    },
+    messages:[MessageSchema]
+
 })
+
+
+const UserModel = (mongoose.models.User as mongoose.Model<User>) || mongoose.model<User>('User',UserSchema);
+
+export default UserModel;

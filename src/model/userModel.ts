@@ -1,5 +1,6 @@
 import mongoose,{Schema,Document} from "mongoose";
 import { Waiting_for_the_Sunrise } from "next/font/google";
+import { string } from "zod";
 
 export interface Message extends Document{
     content:string; //in typescript
@@ -26,7 +27,8 @@ export interface User extends Document{
     verifyCodeExpiry:Date;
     isVerified:boolean;
     isAcceptingMessage: boolean;
-    messages:Message[]
+    messages:Message[];
+    image:string;
 }
 
 const UserSchema: Schema<User> = new Schema({
@@ -71,7 +73,11 @@ const UserSchema: Schema<User> = new Schema({
         
         default:true,
     },
-    messages:[MessageSchema]
+    messages:[MessageSchema],
+    image:{
+        type:String,
+        default:'https://unsplash.com/photos/a-man-with-a-goat-skull-mask-covering-his-face-JQ-lkX4_JUA'
+    }
 
 })
 

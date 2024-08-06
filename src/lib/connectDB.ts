@@ -17,10 +17,10 @@ async function dbConnect():Promise<void> {
         const db = await mongoose.connect(process.env.CONNECTION_DB_URI || '',{
             dbName:'mystery',
         })
-        console.log(db)
+        console.log(db.connections[0].readyState)
 
         conn.isConnected = db.connections[0].readyState
-
+        
         console.log('DB connected Successfully');
     } catch (error) {
 

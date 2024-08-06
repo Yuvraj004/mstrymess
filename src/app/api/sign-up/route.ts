@@ -5,14 +5,18 @@ import { sendVerificationEmail } from "@/helpers/sendVerificationEmail";
 
 export async function POST (request:Request) {
     await dbConnect()
+    console.log('After db conn')
     try {
         const {username,email,password}=await request.json();
+
+        console.log({username,email,password})
+
         const existingUserVerifyByUsername= await UserModel.findOne({
-            username,
+            username:username,
             isVerified: true
         })
 
-        if(!existingUserVerifyByUsername){
+        if(existingUserVerifyByUsername){
             return Response.json({
                 success:false,
                 message:"Username is already taken"

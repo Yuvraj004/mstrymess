@@ -47,12 +47,12 @@ const UserSchema: Schema<User> = new Schema({
     password:{
         type:String, 
         required:[true,"Password is required"],
-        validate: {
-            validator: function(v) {
-              return /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z0-9]{8,}$/.test(v);
-            },
-            message: 'Password must be at least 8 characters and contain at least one letter and one number.'
-        }
+        // validate: {
+        //     validator: function(v) {
+        //       return /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z0-9]{8,}$/.test(v);
+        //     },
+        //     message: 'Password must be at least 8 characters and contain at least one letter and one number.'
+        // }
     },
     verifyCode:{
         type:String, 

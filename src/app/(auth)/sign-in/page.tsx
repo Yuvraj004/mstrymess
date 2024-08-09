@@ -62,7 +62,7 @@ const page = () => {
     checkUsernameUnique()
   }, [debouncedUsername])
   
-
+  const onSubmit = async (data) =>{}
   
   return (
     <div>page</div>

@@ -61,7 +61,8 @@ const page = () => {
           const response = await axios.get(
             `/api/check-username-unique?username=${username}`,
           );
-          setusernameMessage(response.data.message);
+          let mess = response.data.message
+          setusernameMessage(mess);
         } catch (error) {
           const axiosError = error as AxiosError<ApiResponse>;
           setusernameMessage(
@@ -122,8 +123,7 @@ const page = () => {
                     <Input placeholder="username" {...field}
                       onChange={(e) => {
                         field.onChange(e)
-                        console.log(e.target.value)
-                      debounced(e.target.value)
+                        debounced(e.target.value)
                     }}// onChange event was needed becoz we have to use setusername
                     /> 
                   </FormControl>

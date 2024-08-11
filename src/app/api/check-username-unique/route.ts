@@ -50,7 +50,7 @@ export async function GET(req:Request) {
         }
         return Response.json({
             success:true,
-            message: 'Username is unique and added to db',
+            message: 'Username is unique',
         },{status:200})
         
     } catch (error) {

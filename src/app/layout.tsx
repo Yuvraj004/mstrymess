@@ -4,6 +4,7 @@ import "./globals.css";
 import AuthProvider from "@/context/AuthProvider";
 const inter = Inter({ subsets: ["latin"] });
 import { Toaster } from "@/components/ui/toaster"
+import Navbar from "@/components/Navbar";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -20,7 +21,9 @@ export default function RootLayout({
       <AuthProvider >
         <>
           <body className={inter.className}>
+            <Navbar/>
             {children}
+            <Toaster/>
           </body>
         </>
         

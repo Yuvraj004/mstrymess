@@ -22,7 +22,7 @@ import { Button } from "@/components/ui/button";
 const verifyAccount = () => {
     const router = useRouter();//for directing on different page
     const param = useParams<{ username: string }>();//function to directly use params
-    const  {toast} = useToast;
+    const  {toast} = useToast();
     
     //zod implementation
   const form = useForm<z.infer<typeof verifySchema>>({

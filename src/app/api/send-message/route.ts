@@ -1,44 +1,49 @@
 import dbConnect from "@/lib/connectDB";
-import UserModel from "@/model/userModel";
+import {UserModel,MessageModel} from "@/model/userModel";
+
 import { Message } from "@/model/userModel";
 
-export async function POST(request:Request) {
+export async function POST(request: Request) {
     await dbConnect();
 
-    const {username,content} = await request.json()
+    const { username, content } = await request.json()
 
     try {
-        const user = await UserModel.findOne({username})
-        if(!user){
+        const user = await UserModel.findOne({ username })
+        if (!user) {
             return Response.json({
-                'success':false,
-                'message':"User not found"
-            },{status:404})
+                'success': false,
+                'message': "User not found"
+            }, { status: 404 })
         }
 
         //is user accepting messages
-        if(!user.isAcceptingMessage){
+        if (!user.isAcceptingMessage) {
             return Response.json({
-                'success':false,
-                'message':"User not accepting messages"
-            },{status:403})
+                'success': false,
+                'message': "User not accepting messages"
+            }, { status: 403 })
         }
 
-        const newMess = {content,createdAt:new Date()}
+        const newMess = { content, createdAt: new Date() }
 
+        const savemsg = new MessageModel(newMess);
+        await savemsg.save();
+        
+        user.messages.push(newMess as Message)//asserted that the newMess has the interface Message
+        console.log(user.messages);
+        await user.save();
 
-       user.messages.push(newMess as Message)//asserted that the newMess has the interface Message
-       await user.save();
-
-       return Response.json({
-            'success':true,
-            'message':"message sent successfully"
-        },{status:201})
-    } catch (error) {
-        console.log('error sending msgs',error)
         return Response.json({
-            'success':false,
-            'message':"Not able to send msg"
-        },{status:500})
+            'success': true,
+            'message': "message sent successfully"
+        }, { status: 201 })
+        
+    } catch (error) {
+        console.log('error sending msgs', error)
+        return Response.json({
+            'success': false,
+            'message': "Not able to send msg"
+        }, { status: 500 })
     }
 }

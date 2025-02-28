@@ -1,5 +1,5 @@
 import dbConnect from "@/lib/connectDB";
-import UserModel from "@/model/userModel";
+import {UserModel} from "@/model/userModel";
 import { authOptions } from "../auth/[...nextauth]/options";
 import { getServerSession } from "next-auth";
 import { User } from "next-auth";
@@ -11,14 +11,16 @@ export async function GET(request:Request) {
 
     const session = await getServerSession(authOptions);
 
-    const userData:User = session?.user as User;//assertion required
+    const userData:User = await session?.user as User;//assertion required
 
-    if (!session || !session.user){
-        return Response.json({
-            'success':false,
-            'message':"Not Authenticated"
-        },{status:401})
-    }
+    // console.log(session,session?.user);
+    
+    // if (!session || !session.user){
+    //     return Response.json({
+    //         'success':false,
+    //         'message':"Not Authenticated"
+    //     },{status:401})
+    // }
 
     const userId = new mongoose.Types.ObjectId(userData._id);
 
@@ -27,12 +29,13 @@ export async function GET(request:Request) {
         // db
         // if there are two messge in one user then this pipline divides the 
         // user into two subid with one msg each as an object in itself
-        const user = await UserModel.aggregate([
-            {$match:{id:userId}},
-            {$unwind: '$messages'},
-            {$sort: {'messages.createdAt': -1}},
-            {$group: {_id:'$_id', messages:{$push: '$messages'}}}
-        ])
+        // const user = await UserModel.aggregate([
+        //     {$match:{id:userId}},
+        //     {$unwind: '$messages'},
+        //     {$sort: {'messages.createdAt': -1}},
+        //     {$group: {_id:'$_id', messages:{$push: '$messages'}}}
+        // ])
+        const user:any = await UserModel.find({ _id: userId });
 
         if(!user || user.length === 0){
             return Response.json({
@@ -44,12 +47,12 @@ export async function GET(request:Request) {
             'success':true,
             'message':"Returning Messages",
             messages: user[0].messages
-        },{status:201})
+        },{status:200})
     } catch (error) {
         console.log('Were not able to get msg',error)
         return Response.json({
             'success':false,
             'message':"Error while getting msgs"
-        },{status:401})
+        },{status:400})
     }
 }

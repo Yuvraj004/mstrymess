@@ -25,21 +25,24 @@ export const  authOptions: NextAuthOptions={
                 await dbConnect();
                 //extraction done using credentials.identifier 
                 try {
+                   
                     const user = await UserModel.findOne({
                         $or:[
                             {email:credentials.identifier},
                             {username: credentials.identifier}
                         ]
                     })
+
                     if(!user){
                         throw new Error('No user found.');
                     }
-                    if(user.isVerified){
-                        throw new Error('Verify your account.');
-                    }
-
-                    const isPasswordCorrect =await bcrypt.compare(credentials.password,user.password)
-
+                    // if(user.isVerified){
+                    //     throw new Error('Verify your account.');
+                    // }
+                    
+                    const isPasswordCorrect = await bcrypt.compare(credentials.password, user.password)
+                    
+                    console.log(isPasswordCorrect);
                     if(isPasswordCorrect){
                         return user
                     }

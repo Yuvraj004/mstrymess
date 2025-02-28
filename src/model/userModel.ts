@@ -1,6 +1,4 @@
 import mongoose,{Schema,Document} from "mongoose";
-import { Waiting_for_the_Sunrise } from "next/font/google";
-import { string } from "zod";
 
 export interface Message extends Document{
     content:string; //in typescript
@@ -82,6 +80,8 @@ const UserSchema: Schema<User> = new Schema({
 })
 
 
-const UserModel = (mongoose.models.User as mongoose.Model<User>) || mongoose.model<User>('User',UserSchema);
+const UserModel = (mongoose.models.User as mongoose.Model<User>) || mongoose.model<User>('User', UserSchema);
 
-export default UserModel;
+const MessageModel = (mongoose.models.Message as mongoose.Model<Message>) || mongoose.model<Message>('Message', MessageSchema);
+
+export {UserModel,MessageModel};

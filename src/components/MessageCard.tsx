@@ -26,34 +26,46 @@ import { ApiResponse } from "@/types/ApiResponse"
 
 type MessageCardProps = {
     message: Message;
-    onMessageDelete: (messageId:string) => void;
+    onMessageDelete: (messageId: string) => void;
 }
 
 const MessageCard = ({ message, onMessageDelete }: MessageCardProps) => {
-    
+
     const { toast } = useToast();
-    
+
     async function handleDeleteConfirm() {
         const result = await axios.delete<ApiResponse>(`/api/delete-message/${message._id}`);
         toast({
-            title:result.data.message
+            title: result.data.message
         })
-        onMessageDelete(message._id)
+        console.log('what type of msg: ', typeof (message._id));
+        let msgId: string = ''; // Initialize with a default value
+
+        if (typeof message._id === 'string') {
+            msgId = message._id;
+        } else {
+            console.error('message._id is not a string:', message._id);
+            toast({
+                title: "Error: Invalid message ID."
+            })
+            return; //stop the delete function.
+        }
+        // const msgId: string = '';
+        onMessageDelete(msgId)
     }
 
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Card Title</CardTitle>
-                <CardDescription>Card Description</CardDescription>
+                <CardTitle>Message</CardTitle>
             </CardHeader>
             <CardContent>
-                {/* <p>Card Content</p> */}
+                <p>{message.content}</p>
             </CardContent>
             <CardFooter>
                 <AlertDialog>
                     <AlertDialogTrigger asChild>
-                        <Button variant="destructive"><X className="w-5 h-5"/></Button>
+                        <Button variant="destructive"><X className="w-5 h-5" /></Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                         <AlertDialogHeader>

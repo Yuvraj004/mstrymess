@@ -13,18 +13,19 @@ import axios, { AxiosError } from "axios";
 import { Loader2, RefreshCcw } from "lucide-react";
 import { User } from "next-auth";
 import { useSession } from "next-auth/react";
-import { useCallback, useEffect, useState } from "react";
+import {  useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 const Dashboard = () => {
   const [messages, setMessages] = useState<Message[]>([]);
+  // const [messages, setMessages] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isswitchloading, setIsSwitchLoading] = useState(false);
   const { toast } = useToast();
   
   //ui update pehle baad mein backend update
   const handleDeleteMessage = (messageId: string) => {
-    setMessages(messages.filter((mess) => mess._id !== messageId))//jo match nhi kr rhe unhe filter krdo
+    setMessages(messages?.filter((mess) => mess._id !== messageId))//jo match nhi kr rhe unhe filter krdo
   }
   
   const { data: session } = useSession()
@@ -62,7 +63,10 @@ const Dashboard = () => {
     try {
       const response = await axios.get<ApiResponse>('/api/get-messages');
       
-      setMessages(response.data.messages || [])
+      setMessages(response.data?.messages ||[])
+      
+      console.log(messages);
+      
       if (refresh) {
         toast({
           title: "Refreshed Messages",
@@ -73,7 +77,7 @@ const Dashboard = () => {
       const axiosError = error as AxiosError<ApiResponse>;
       toast({
         title: "Error",
-        description: "Error fetching messages",
+        description: `Error fetching messages, ${axiosError}`,
         variant:"destructive"
       })
     } finally {
@@ -112,7 +116,7 @@ const Dashboard = () => {
   
   
   //creating your url
-  const { username } = session?.user as User;
+  const { username } = session?.user as User || {};
   const baseuri = `${window.location.protocol}//${window.location.host}`;
   const profileUrl = `${baseuri}/u/${username}`;
   
@@ -172,8 +176,8 @@ const Dashboard = () => {
         )}
       </Button>
       <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
-        {messages.length > 0 ? (
-          messages.map((message, index) => (
+        {messages?.length > 0 ? (
+          messages?.map((message, index) => (
             <MessageCard
               key={index}
               message={message}
